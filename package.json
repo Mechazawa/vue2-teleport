@@ -1,0 +1,38 @@
+{
+  "name": "vue2-teleport",
+  "version": "1.0.0",
+  "main": "dist/teleport.umd.js",
+  "module": "dist/teleport.esm.js",
+  "unpkg": "dist/teleport.min.js",
+  "browser": {
+    "./sfc": "src/teleport.vue"
+  },
+  "scripts": {
+    "all": "npm run lint && npm run clean && npm run build",
+    "build": "npm run build:umd & npm run build:es & npm run build:unpkg",
+    "build:umd": "npx rollup --config build/rollup.config.js --format umd --file dist/teleport.umd.js",
+    "build:es": "npx rollup --config build/rollup.config.js --format es --file dist/teleport.esm.js",
+    "build:unpkg": "npx rollup --config build/rollup.config.js --format iife --file dist/teleport.min.js",
+    "clean": "rm -r dist || true",
+    "lint": "npx eslint src"
+  },
+  "devDependencies": {
+    "@mapcreator/eslint-config": "^1.1.4",
+    "@rollup/plugin-buble": "^0.21.3",
+    "@rollup/plugin-commonjs": "^11.1.0",
+    "@vue/eslint-config-standard": "^5.1.2",
+    "eslint": "^6.8.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-vue": "^6.2.2",
+    "rollup": "^1.17.0",
+    "rollup-plugin-vue": "^5.0.1",
+    "vue": ">=2.0.0 <3.0.0",
+    "vue-template-compiler": ">=2.0.0 <3.0.0"
+  },
+  "dependencies": {
+    "babel-eslint": "^10.1.0"
+  }
+}
