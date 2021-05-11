@@ -1,6 +1,6 @@
 {
   "name": "vue2-teleport",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/teleport.umd.js",
   "module": "dist/teleport.esm.js",
   "unpkg": "dist/teleport.min.js",
