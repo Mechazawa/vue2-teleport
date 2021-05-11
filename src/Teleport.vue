@@ -23,7 +23,7 @@ export default {
       nodes: [],
       waiting: false,
       observer: null,
-      parent: null,
+      parents: new Set(),
     };
   },
   watch: {
@@ -75,9 +75,9 @@ export default {
     move() {
       this.waiting = false;
 
-      this.parent = document.querySelector(this.to);
+      this.parents = document.querySelectorAll(this.to);
 
-      if (!this.parent) {
+      if (this.parents.size === 0) {
         this.disable();
 
         this.waiting = true;
@@ -85,15 +85,24 @@ export default {
         return;
       }
 
-      if (this.where === 'before') {
-        this.parent.prepend(this.getFragment());
-      } else {
-        this.parent.appendChild(this.getFragment());
+      for (const parent of this.parents) {
+        if (this.where === 'before') {
+          parent.prepend(this.getFragment());
+        } else {
+          parent.appendChild(this.getFragment());
+        }
       }
     },
-    disable() {
-      this.$el.appendChild(this.getFragment());
-      this.parent = null;
+    disable (parent = null) {
+      if (parent) {
+        this.parents.delete(parent);
+      } else {
+        this.parents.clear();
+      }
+
+      if (this.parents.size === 0) {
+        this.$el.appendChild(this.getFragment());
+      }
     },
     // Using a fragment is faster because it'll trigger only a single reflow
     // See https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
@@ -112,11 +121,13 @@ export default {
         const mutation = mutations[i];
         const filteredAddedNodes = Array.from(mutation.addedNodes).filter(node => !this.nodes.includes(node));
 
-        if (Array.from(mutation.removedNodes).includes(this.parent)) {
-          this.disable();
-          this.waiting = !this.disabled;
-        } else if (this.waiting && filteredAddedNodes.length > 0) {
-          shouldMove = true;
+        for (const parent of this.parents) {
+          if (Array.from(mutation.removedNodes).includes(parent)) {
+            this.disable(parent);
+            this.waiting = !this.disabled;
+          } else if (this.waiting && filteredAddedNodes.length > 0) {
+            shouldMove = true;
+          }
         }
       }
 
