@@ -85,13 +85,14 @@ export default {
         return;
       }
 
-      for (const parent of this.parents) {
+      // eslint-disable-next-line no-loop-func
+      this.parents.forEach(parent => {
         if (this.where === 'before') {
           parent.prepend(this.getFragment());
         } else {
           parent.appendChild(this.getFragment());
         }
-      }
+      });
     },
     disable (parent = null) {
       if (parent) {
@@ -121,14 +122,15 @@ export default {
         const mutation = mutations[i];
         const filteredAddedNodes = Array.from(mutation.addedNodes).filter(node => !this.nodes.includes(node));
 
-        for (const parent of this.parents) {
+        // eslint-disable-next-line no-loop-func
+        this.parents.forEach(parent => {
           if (Array.from(mutation.removedNodes).includes(parent)) {
             this.disable(parent);
             this.waiting = !this.disabled;
           } else if (this.waiting && filteredAddedNodes.length > 0) {
             shouldMove = true;
           }
-        }
+        });
       }
 
       if (shouldMove) {
