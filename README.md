@@ -1,5 +1,5 @@
-vue2-teleporter
----------------
+vue2-teleport
+-------------
 
 This package is an alternative to [vue3's teleport component][oc-teleport]. You can use the documentation provided by vue as a starting point to using this package.
 
