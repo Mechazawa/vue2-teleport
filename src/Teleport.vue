@@ -137,11 +137,34 @@ export default {
         attributes: false,
         characterData: false,
       });
+
+      if (this.childObserver) {
+        return;
+      }
+      // watch childNodes change
+      this.childObserver = new MutationObserver(mutations => {
+        const childChangeRecord = mutations.find(i => i.target === this.$el);
+        if (childChangeRecord) {
+          this.nodes = Array.from(this.$el.childNodes);
+          this.maybeMove();
+        }
+      });
+
+      this.childObserver.observe(this.$el, {
+        childList: true,
+        subtree: false,
+        attributes: false,
+        characterData: false,
+      });
     },
     teardownObserver() {
       if (this.observer) {
         this.observer.disconnect();
         this.observer = null;
+      }
+      if (this.childObserver) {
+        this.childObserver.disconnect();
+        this.childObserver = null;
       }
     },
   },
