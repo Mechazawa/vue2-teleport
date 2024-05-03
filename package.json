@@ -1,6 +1,14 @@
 {
   "name": "vue2-teleport",
   "version": "1.1.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mechazawa/vue2-teleport.git"
+  },
+  "homepage": "https://github.com/Mechazawa/vue2-teleport",
+  "bugs": {
+    "url": "https://github.com/Mechazawa/vue2-teleport/issues"
+  },
   "main": "dist/teleport.umd.js",
   "module": "dist/teleport.esm.js",
   "unpkg": "dist/teleport.min.js",
