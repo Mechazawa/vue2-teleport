@@ -145,7 +145,6 @@ export default {
       this.childObserver = new MutationObserver(mutations => {
         const childChangeRecord = mutations.find(i => i.target === this.$el);
         if (childChangeRecord) {
-          this.nodes = Array.from(this.$el.childNodes);
           this.maybeMove();
         }
       });
