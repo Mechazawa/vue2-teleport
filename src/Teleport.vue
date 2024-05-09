@@ -145,6 +145,7 @@ export default {
       this.childObserver = new MutationObserver(mutations => {
         const childChangeRecord = mutations.find(i => i.target === this.$el);
         if (childChangeRecord) {
+          this.nodes = this.$vnode.componentOptions.children.map(i => i.elm);
           this.maybeMove();
         }
       });
