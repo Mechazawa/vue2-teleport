@@ -76,8 +76,6 @@ export default {
       this.waiting = false;
 
       this.parent = document.querySelector(this.to);
-      // Remove old nodes before update position.
-      this.nodes.forEach((node) => node.parentNode && node.parentNode.removeChild(node));
       
       if (!this.parent) {
         this.disable();
@@ -147,6 +145,8 @@ export default {
       this.childObserver = new MutationObserver(mutations => {
         const childChangeRecord = mutations.find(i => i.target === this.$el);
         if (childChangeRecord) {
+          // Remove old nodes before update position.
+          this.nodes.forEach((node) => node.parentNode && node.parentNode.removeChild(node));
           this.nodes = this.$vnode.componentOptions.children.map(i => i.elm).filter(i => i);
           this.maybeMove();
         }
