@@ -77,7 +77,7 @@ export default {
 
       this.parent = document.querySelector(this.to);
       // Remove old nodes before update position.
-      this.nodes.forEach((node) => node.parentNode.removeChild(node));
+      this.nodes.forEach((node) => node.parentNode && node.parentNode.removeChild(node));
       
       if (!this.parent) {
         this.disable();
