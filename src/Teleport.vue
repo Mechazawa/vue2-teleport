@@ -51,6 +51,9 @@ export default {
     this.maybeMove();
   },
   beforeDestroy() {
+    // Fix nodes reference
+    this.nodes = this.getComponentChildrenNode();
+
     // Move back
     this.disable();
 
@@ -76,7 +79,7 @@ export default {
       this.waiting = false;
 
       this.parent = document.querySelector(this.to);
-      
+
       if (!this.parent) {
         this.disable();
 
@@ -147,7 +150,7 @@ export default {
         if (childChangeRecord) {
           // Remove old nodes before update position.
           this.nodes.forEach((node) => node.parentNode && node.parentNode.removeChild(node));
-          this.nodes = this.$vnode.componentOptions.children.map(i => i.elm).filter(i => i);
+          this.nodes = this.getComponentChildrenNode();
           this.maybeMove();
         }
       });
@@ -168,6 +171,11 @@ export default {
         this.childObserver.disconnect();
         this.childObserver = null;
       }
+    },
+    getComponentChildrenNode() {
+      return this.$vnode.componentOptions.children
+        .map((i) => i.elm)
+        .filter((i) => i);
     },
   },
 };
