@@ -36,7 +36,6 @@ export default {
         this.$nextTick(() => {
           this.teardownObserver();
         });
-        this.teardownObserver();
       } else {
         this.bootObserver();
         this.move();
