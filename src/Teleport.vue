@@ -32,6 +32,10 @@ export default {
     disabled(value) {
       if (value) {
         this.disable();
+        // Ensure all event done.
+        this.$nextTick(() => {
+          this.teardownObserver();
+        });
         this.teardownObserver();
       } else {
         this.bootObserver();
