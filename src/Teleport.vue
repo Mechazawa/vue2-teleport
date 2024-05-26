@@ -32,7 +32,10 @@ export default {
     disabled(value) {
       if (value) {
         this.disable();
-        this.teardownObserver();
+        // Ensure all event done.
+        this.$nextTick(() => {
+          this.teardownObserver();
+        });
       } else {
         this.bootObserver();
         this.move();
@@ -51,6 +54,9 @@ export default {
     this.maybeMove();
   },
   beforeDestroy() {
+    // Fix nodes reference
+    this.nodes = this.getComponentChildrenNode();
+
     // Move back
     this.disable();
 
@@ -145,7 +151,9 @@ export default {
       this.childObserver = new MutationObserver(mutations => {
         const childChangeRecord = mutations.find(i => i.target === this.$el);
         if (childChangeRecord) {
-          this.nodes = Array.from(this.$el.childNodes);
+          // Remove old nodes before update position.
+          this.nodes.forEach((node) => node.parentNode && node.parentNode.removeChild(node));
+          this.nodes = this.getComponentChildrenNode();
           this.maybeMove();
         }
       });
@@ -166,6 +174,11 @@ export default {
         this.childObserver.disconnect();
         this.childObserver = null;
       }
+    },
+    getComponentChildrenNode() {
+      return this.$vnode.componentOptions.children
+        .map((i) => i.elm)
+        .filter((i) => i);
     },
   },
 };
