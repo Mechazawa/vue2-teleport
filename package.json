@@ -21,6 +21,7 @@
     "build:umd": "npx rollup --config build/rollup.config.js --format umd --file dist/teleport.umd.js",
     "build:es": "npx rollup --config build/rollup.config.js --format es --file dist/teleport.esm.js",
     "build:unpkg": "npx rollup --config build/rollup.config.js --format iife --file dist/teleport.min.js",
+    "prepublishOnly": "npm run all",
     "clean": "rm -r dist || true",
     "lint": "npx eslint src"
   },
