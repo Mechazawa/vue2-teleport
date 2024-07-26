@@ -11,7 +11,7 @@ npm install vue2-teleport
 
 ## Example
 
-```
+```vue
 <template>
   <div>
       <button @click="modalOpen = true">
