@@ -24,6 +24,7 @@ export default {
       waiting: false,
       observer: null,
       parent: null,
+      moved: false,
     };
   },
   watch: {
@@ -81,15 +82,17 @@ export default {
     move() {
       this.waiting = false;
 
-      this.parent = document.querySelector(this.to);
+      const parent = document.querySelector(this.to);
 
-      if (!this.parent) {
+      if (!parent) {
         this.disable();
 
         this.waiting = true;
 
         return;
       }
+
+      this.parent = parent;
 
       if (this.where === 'before') {
         this.parent.prepend(this.getFragment());
@@ -98,8 +101,10 @@ export default {
       }
     },
     disable() {
-      this.$el.appendChild(this.getFragment());
-      this.parent = null;
+      if (this.parent) {
+        this.$el.appendChild(this.getFragment());
+        this.parent = null;
+      }
     },
     // Using a fragment is faster because it'll trigger only a single reflow
     // See https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
