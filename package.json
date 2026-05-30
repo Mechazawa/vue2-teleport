@@ -23,9 +23,9 @@
   "scripts": {
     "all": "npm run lint && npm run clean && npm run build",
     "build": "npm run build:umd & npm run build:es & npm run build:unpkg",
-    "build:umd": "npx rollup --config build/rollup.config.js --format umd --file dist/teleport.umd.js",
-    "build:es": "npx rollup --config build/rollup.config.js --format es --file dist/teleport.esm.js",
-    "build:unpkg": "npx rollup --config build/rollup.config.js --format iife --file dist/teleport.min.js",
+    "build:umd": "npx rollup --config rollup.config.js --format umd --file dist/teleport.umd.js",
+    "build:es": "npx rollup --config rollup.config.js --format es --file dist/teleport.esm.js",
+    "build:unpkg": "npx rollup --config rollup.config.js --format iife --file dist/teleport.min.js",
     "prepublishOnly": "npm run all",
     "clean": "rm -r dist || true",
     "lint": "npx eslint src"
