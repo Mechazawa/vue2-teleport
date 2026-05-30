@@ -82,7 +82,7 @@ export default {
     move() {
       this.waiting = false;
 
-      const parent = document.querySelector(this.to);
+      const parent = this.to instanceof HTMLElement ? this.to : document.querySelector(this.to);
 
       if (!parent) {
         this.disable();
