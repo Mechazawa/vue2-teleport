@@ -66,7 +66,7 @@ If `to` is a selector that matches more than one element, the content is telepor
 </Teleport>
 ```
 
-> **Note:** clones in the extra targets are static snapshots — they don't receive reactive updates or Vue event listeners. Use multiple targets for static content; for interactive content prefer a single target.
+> **Note:** clones in the extra targets are static snapshots. They don't receive reactive updates or Vue event listeners, so use multiple targets for static content and prefer a single target for interactive content.
 
 ## License
 
