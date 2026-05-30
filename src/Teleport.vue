@@ -23,7 +23,10 @@ export default {
       nodes: [],
       waiting: false,
       observer: null,
-      parent: null,
+      // The primary target holds the live (reactive) nodes; any additional
+      // matching targets hold static deep clones (see `move`).
+      parents: [],
+      clones: [],
       moved: false,
     };
   },
@@ -82,9 +85,12 @@ export default {
     move() {
       this.waiting = false;
 
-      const parent = this.to instanceof HTMLElement ? this.to : document.querySelector(this.to);
+      // `to` may be a single element or a selector matching one or many nodes.
+      const parents = this.to instanceof HTMLElement
+        ? [this.to]
+        : Array.from(document.querySelectorAll(this.to));
 
-      if (!parent) {
+      if (parents.length === 0) {
         this.disable();
 
         this.waiting = true;
@@ -92,26 +98,53 @@ export default {
         return;
       }
 
-      this.parent = parent;
+      // Drop clones from any previous placement. This never touches our host
+      // element, so it can't retrigger the childNodes observer.
+      this.removeClones();
 
-      if (this.where === 'before') {
-        this.parent.prepend(this.getFragment());
-      } else {
-        this.parent.appendChild(this.getFragment());
-      }
+      parents.forEach((parent, index) => {
+        // The first target receives the real nodes (kept reactive). Moving them
+        // straight into the target — never back through `this.$el` — keeps the
+        // observers from looping. Extra targets receive static deep clones,
+        // since a node can only live in one place.
+        const fragment = index === 0
+          ? this.getFragment()
+          : this.getFragment(this.nodes.map(node => node.cloneNode(true)), this.clones);
+
+        if (this.where === 'before') {
+          parent.prepend(fragment);
+        } else {
+          parent.appendChild(fragment);
+        }
+      });
+
+      this.parents = parents;
     },
     disable() {
-      if (this.parent) {
+      this.removeClones();
+
+      if (this.parents.length > 0) {
+        // Pull the live nodes back into our (hidden) host element. Resetting
+        // `parents` first keeps a follow-up disable() from churning the host.
+        this.parents = [];
         this.$el.appendChild(this.getFragment());
-        this.parent = null;
       }
+    },
+    removeClones() {
+      this.clones.forEach(node => node.parentNode && node.parentNode.removeChild(node));
+      this.clones = [];
     },
     // Using a fragment is faster because it'll trigger only a single reflow
     // See https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment
-    getFragment() {
+    getFragment(nodes = this.nodes, track = null) {
       const fragment = document.createDocumentFragment();
 
-      this.nodes.forEach(node => fragment.appendChild(node));
+      nodes.forEach((node) => {
+        if (track) {
+          track.push(node);
+        }
+        fragment.appendChild(node);
+      });
 
       return fragment;
     },
@@ -121,12 +154,16 @@ export default {
 
       for (let i = 0; i < mutations.length; i++) {
         const mutation = mutations[i];
-        const filteredAddedNodes = Array.from(mutation.addedNodes).filter(node => !this.nodes.includes(node));
+        // Ignore nodes we manage ourselves (live nodes + clones) so our own
+        // DOM writes don't retrigger a move.
+        const filteredAddedNodes = Array.from(mutation.addedNodes)
+          .filter(node => !this.nodes.includes(node) && !this.clones.includes(node));
+        const removedParent = Array.from(mutation.removedNodes).some(node => this.parents.includes(node));
 
-        if (Array.from(mutation.removedNodes).includes(this.parent)) {
-          this.disable();
-          this.waiting = !this.disabled;
-        } else if (this.waiting && filteredAddedNodes.length > 0) {
+        // A target we were using disappeared (re-distribute to whatever still
+        // matches, or fall back to waiting), or we're waiting and something new
+        // showed up (a target may have appeared). move() handles both.
+        if (removedParent || (this.waiting && filteredAddedNodes.length > 0)) {
           shouldMove = true;
         }
       }

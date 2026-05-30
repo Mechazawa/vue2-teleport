@@ -48,6 +48,26 @@ export default {
 </script>
 ```
 
+## Props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `to` | `String \| HTMLElement` | _(required)_ | A CSS selector or DOM element the content is teleported into. |
+| `where` | `String` | `'after'` | Where to insert relative to the target's existing children: `'after'` (append) or `'before'` (prepend). |
+| `disabled` | `Boolean` | `false` | When `true`, the content stays in place instead of being teleported. |
+
+## Multiple targets
+
+If `to` is a selector that matches more than one element, the content is teleported into **every** match. The first match receives the live, reactive nodes; the additional matches receive static deep clones.
+
+```vue
+<Teleport to=".sidebar">
+  <span class="badge">New</span>
+</Teleport>
+```
+
+> **Note:** clones in the extra targets are static snapshots — they don't receive reactive updates or Vue event listeners. Use multiple targets for static content; for interactive content prefer a single target.
+
 ## License
 
 This project is licensed under the [CC0-1.0 License][license].
