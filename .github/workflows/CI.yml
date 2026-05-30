@@ -28,4 +28,3 @@ jobs:
             package.json
             package-lock.json
             src
-            build
