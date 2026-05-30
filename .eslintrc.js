@@ -1,5 +1,5 @@
 module.exports = {
-    extends: '@mapcreator',
+    extends: './eslint-config',
     rules: {
         'prefer-destructuring': 'off',
         'max-depth': 'off',
