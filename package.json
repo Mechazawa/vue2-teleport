@@ -26,7 +26,6 @@
     "lint": "npx eslint src"
   },
   "devDependencies": {
-    "@mapcreator/eslint-config": "^1.1.4",
     "@rollup/plugin-buble": "^0.21.3",
     "@rollup/plugin-commonjs": "^11.1.0",
     "@vue/eslint-config-standard": "^5.1.2",

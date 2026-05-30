@@ -9,7 +9,7 @@ export default {
   name: 'teleport',
   props: {
     to: {
-      type: String,
+      type: [String, HTMLElement],
       required: true,
     },
     where: {
